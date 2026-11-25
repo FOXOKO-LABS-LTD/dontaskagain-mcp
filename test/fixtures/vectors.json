@@ -1,0 +1,159 @@
+{
+  "version": "daa-e2e-1",
+  "note": "Private keys are sha256(\"daa-e2e-1 test vector <label>\"). Regenerate: node agent-wallet-e2e-v1-ref.mjs",
+  "keys": {
+    "agent": {
+      "sig_priv": "CK80ljhEPkOj-jsIUOOI3b-q94nWJQuQAcHdtONk8pk",
+      "kex_priv": "WSWIsPoTNMzpN0vt4lpi2OlLN03zWs6RvL0hHDI6pkg",
+      "sig_pub": "3zRYxuJPIy6VnJ0Lw1OqUxDfJGN3sUns9D_vmc7u714",
+      "kex_pub": "lL4XL4TAxQCULRUiC-rRzi-tq6mLR9h0CYQm5pjTSRc",
+      "bundle": "3zRYxuJPIy6VnJ0Lw1OqUxDfJGN3sUns9D_vmc7u714.lL4XL4TAxQCULRUiC-rRzi-tq6mLR9h0CYQm5pjTSRc",
+      "fp": "YRYS-YJBG-XWVJ-A3VJ-S775-4KMV",
+      "rk": "SZQ2GsPrPDo"
+    },
+    "wallet": {
+      "sig_priv": "xTFzYY-vTzg5heuDVr5puenQCNl8ZVgJuoxh0IOlBN0",
+      "kex_priv": "zGwoCohPb4JMn9R7QaRsdgvcDScDPs5xEcA7EaXLhQo",
+      "sig_pub": "Yz0BkgvRURoi76qnHIbTpE7gdgtNWtARi-kd5O3URnE",
+      "kex_pub": "DMRTk1z_kReTL0mX0KxBKJhL6vjjW-dz-1N5WCA74FY",
+      "bundle": "Yz0BkgvRURoi76qnHIbTpE7gdgtNWtARi-kd5O3URnE.DMRTk1z_kReTL0mX0KxBKJhL6vjjW-dz-1N5WCA74FY",
+      "fp": "34IU-KXR6-6JTC-LLSF-6OQP-NI6F",
+      "rk": "f4OGlnAC_g8"
+    }
+  },
+  "envelopes": [
+    {
+      "name": "agent_to_wallet_request",
+      "eph_priv": "0sLh6VXfZIpAJQ9qWIWZtjm8_37MMifPqTxNn2v79aE",
+      "nonce": "tDtft2WOAtETUAxZ",
+      "aad": "daa-e2e-1\nenv_vector-agent-to-wallet\nwal_test0001\nag_test0001\nwallet\n2026-11-19T12:00:00Z\nGpnStRNUttcW3rmka3JEhkzYxFmDzwvAzW7uloKXgw8\nf4OGlnAC_g8",
+      "sig_message": "sig:daa-e2e-1\nenv_vector-agent-to-wallet\nwal_test0001\nag_test0001\nwallet\n2026-11-19T12:00:00Z\nGpnStRNUttcW3rmka3JEhkzYxFmDzwvAzW7uloKXgw8\nf4OGlnAC_g8\ntDtft2WOAtETUAxZ\n1SOsZuWW23xQ7KG_5_L-sux4usiPskgD-c2gOhVvsDM",
+      "payload": {
+        "t": "request",
+        "request_id": "awr_e2e_vector0000000001",
+        "client_request_id": "inv-118",
+        "created_at": "2026-11-19T12:00:00Z",
+        "expires_at": "2026-11-19T13:00:00Z",
+        "type": "transfer",
+        "account": "acc_main0001",
+        "network": "tron",
+        "intent": {
+          "asset": "USDT",
+          "to": "TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A",
+          "amount": "25.00"
+        },
+        "reason": "Оплата счёта #118"
+      },
+      "envelope": {
+        "v": "daa-e2e-1",
+        "id": "env_vector-agent-to-wallet",
+        "wallet_id": "wal_test0001",
+        "from": "ag_test0001",
+        "to": "wallet",
+        "at": "2026-11-19T12:00:00Z",
+        "epk": "GpnStRNUttcW3rmka3JEhkzYxFmDzwvAzW7uloKXgw8",
+        "rk": "f4OGlnAC_g8",
+        "n": "tDtft2WOAtETUAxZ",
+        "ct": "2ClL-cHLks6MxA1d_MmeekJF24MKWcL84WnZ1Its8bLFVzSBjCfjktes5Xb6NhUuNI4WW_5uctcZoP4fShtvvglqrcZlWerbq1QvSvGdm8AmzfdkLaUbtqgziHClWm5P0UYD-oWh3zhvtGjPDVhLw46yRHSB2PufyCq3kLXcTnhN4Xuy96V9HeONr8ZscQNkKxTU7MVd4NbzolGODJIui57JxEZ93ND51479Sp6MICG1t85IH8Ke8PwHIltYIHyzrriNKJmxJpsIJmUdxALzdbpqUkPPxv3RQbh11VSit9hPzPlc1S-cLHSlgWQahCnyNsBh7-C76nmKZTKPPdMzQ4n1DY17MVkiQ9EI3-hSar9vAz83BRWFBP6nHj1fzSvRxteBE2f7GRwJQqWA-81JHV3Se8km4LHSmnLWwjd4IKk4njUn9ugVotwjlK7Lx7F-JMVayPOfOWP34w2Vy-EJMQAKM-zFfg",
+        "sig": "aQKor3B26hduzCnQnBoAkrH_DmxxbXM4AXwHLintDx7QLWrr1scBhSBuGn8SFkJVlvWmzvucJsPIf4lnubD3Bw"
+      },
+      "valid": true
+    },
+    {
+      "name": "wallet_to_agent_status",
+      "eph_priv": "DAj-571waIdZCoj8n-CkBDpQmceL0Myug_XM5ObkDnU",
+      "nonce": "TY5aZH49qYw9ceVy",
+      "aad": "daa-e2e-1\nenv_vector-wallet-to-agent\nwal_test0001\nwallet\nag_test0001\n2026-11-19T12:01:00Z\n7ZrHNpgYvKne6fKNDluSo2ROBFUs9HpA-f2lLrh3C1o\nSZQ2GsPrPDo",
+      "sig_message": "sig:daa-e2e-1\nenv_vector-wallet-to-agent\nwal_test0001\nwallet\nag_test0001\n2026-11-19T12:01:00Z\n7ZrHNpgYvKne6fKNDluSo2ROBFUs9HpA-f2lLrh3C1o\nSZQ2GsPrPDo\nTY5aZH49qYw9ceVy\njRJij72aQm1JVmMCpCyOjnE6bNqrz22EHfvpyyjVV8I",
+      "payload": {
+        "t": "status",
+        "event": "request.status",
+        "request": {
+          "request_id": "awr_e2e_vector0000000001",
+          "status": "rejected",
+          "decision": {
+            "by": "human",
+            "via": "extension"
+          }
+        }
+      },
+      "envelope": {
+        "v": "daa-e2e-1",
+        "id": "env_vector-wallet-to-agent",
+        "wallet_id": "wal_test0001",
+        "from": "wallet",
+        "to": "ag_test0001",
+        "at": "2026-11-19T12:01:00Z",
+        "epk": "7ZrHNpgYvKne6fKNDluSo2ROBFUs9HpA-f2lLrh3C1o",
+        "rk": "SZQ2GsPrPDo",
+        "n": "TY5aZH49qYw9ceVy",
+        "ct": "sAmbJU9vP6mNqxqHcgSYg8hx-gmZV-V-vj5JRblSs3GUpedE30WEyxL9GsUrEenijpjDHeEOOhNrEpNAda-5dgx6ZgvWGK4t8BRWG0GHbMufQyZ-O-NwZFch6hClTrfPpzWbYwyRik4jJf7Dxcqr4O8T05rty5AJH1p6C9EfWgX6dVeTFymC2tw2X4s2ljJbTcJAhZqdZSEMwwi93KHu65TXJszXkpIQXjiA",
+        "sig": "-aB4ekD--LajKN-sURCbRGFxP0kn7baRc1g9ilqNK_W2U4_bD4iU_ieSUSRg3arZsmCsoyyzDET4LFX8iQK7Ag"
+      },
+      "valid": true
+    },
+    {
+      "name": "forged_by_server_wrong_signer",
+      "envelope": {
+        "v": "daa-e2e-1",
+        "id": "env_vector-forged",
+        "wallet_id": "wal_test0001",
+        "from": "ag_test0001",
+        "to": "wallet",
+        "at": "2026-11-19T12:00:00Z",
+        "epk": "7eztl8v1tsruQq2a32ixKzGaAM2Y0VknoUrDrgwzyn4",
+        "rk": "f4OGlnAC_g8",
+        "n": "Nmy4ZYPZOHThcK6L",
+        "ct": "UxbgTxQadyuSVTTqkHhTwsTLIMOiejdqX-yC0ImuUgo7qFRvv5Y-k30ora3EQp_20JdCOIORP_fAvUONOZcztdGY7ckpkkXXKXBLCHX5hBG8VV-tGH490PIni5hfTGfSJ6MQ0jRvk1WQB9ELDsMceAEbqYvIcF_1U5ZQ76VrtgTiosILjVBaZ0w3t1TsnYAW05J5cK1KhslJbj8JEM_KtOhqx7RL_MQKqJvqDw21d2YPcj4_KVdHZ7AIxZi1pySNSqgtdELL1PB15P2B7CdKoeh2SMWN6VHwKJqMj_QATpDO6VfTASpAayluD2PZ-G8UtUxERnhCY0c828zufTwdpSKDSlVZO5GiKqc217KcNA-frMwRhHQZQ8kgKb43mG_8JK-ubM1yfJFKvo6T72R-YFc01JR5t8tsAihbhT36sNBI-OqCKdEUBR0C1v_gwJOxWT_HBzZNaQX5ja8gpqVibjsbECbWaw",
+        "sig": "IJWAki9NHDi0qASYPUcciERmpAtJi4dv55gKr8PGC6yJy0QqdjGJ-KQS5MKA95i_HbFw7BkNDfmL2xNWdFFjBg"
+      },
+      "valid": false,
+      "error": "E2E_BAD_SIGNATURE"
+    },
+    {
+      "name": "header_tampered_from",
+      "envelope": {
+        "v": "daa-e2e-1",
+        "id": "env_vector-agent-to-wallet",
+        "wallet_id": "wal_test0001",
+        "from": "ag_other",
+        "to": "wallet",
+        "at": "2026-11-19T12:00:00Z",
+        "epk": "GpnStRNUttcW3rmka3JEhkzYxFmDzwvAzW7uloKXgw8",
+        "rk": "f4OGlnAC_g8",
+        "n": "tDtft2WOAtETUAxZ",
+        "ct": "2ClL-cHLks6MxA1d_MmeekJF24MKWcL84WnZ1Its8bLFVzSBjCfjktes5Xb6NhUuNI4WW_5uctcZoP4fShtvvglqrcZlWerbq1QvSvGdm8AmzfdkLaUbtqgziHClWm5P0UYD-oWh3zhvtGjPDVhLw46yRHSB2PufyCq3kLXcTnhN4Xuy96V9HeONr8ZscQNkKxTU7MVd4NbzolGODJIui57JxEZ93ND51479Sp6MICG1t85IH8Ke8PwHIltYIHyzrriNKJmxJpsIJmUdxALzdbpqUkPPxv3RQbh11VSit9hPzPlc1S-cLHSlgWQahCnyNsBh7-C76nmKZTKPPdMzQ4n1DY17MVkiQ9EI3-hSar9vAz83BRWFBP6nHj1fzSvRxteBE2f7GRwJQqWA-81JHV3Se8km4LHSmnLWwjd4IKk4njUn9ugVotwjlK7Lx7F-JMVayPOfOWP34w2Vy-EJMQAKM-zFfg",
+        "sig": "aQKor3B26hduzCnQnBoAkrH_DmxxbXM4AXwHLintDx7QLWrr1scBhSBuGn8SFkJVlvWmzvucJsPIf4lnubD3Bw"
+      },
+      "valid": false,
+      "error": "E2E_BAD_SIGNATURE"
+    },
+    {
+      "name": "ciphertext_tampered",
+      "envelope": {
+        "v": "daa-e2e-1",
+        "id": "env_vector-agent-to-wallet",
+        "wallet_id": "wal_test0001",
+        "from": "ag_test0001",
+        "to": "wallet",
+        "at": "2026-11-19T12:00:00Z",
+        "epk": "GpnStRNUttcW3rmka3JEhkzYxFmDzwvAzW7uloKXgw8",
+        "rk": "f4OGlnAC_g8",
+        "n": "tDtft2WOAtETUAxZ",
+        "ct": "2ClL-cHLksAMxA1d_MmeekJF24MKWcL84WnZ1Its8bLFVzSBjCfjktes5Xb6NhUuNI4WW_5uctcZoP4fShtvvglqrcZlWerbq1QvSvGdm8AmzfdkLaUbtqgziHClWm5P0UYD-oWh3zhvtGjPDVhLw46yRHSB2PufyCq3kLXcTnhN4Xuy96V9HeONr8ZscQNkKxTU7MVd4NbzolGODJIui57JxEZ93ND51479Sp6MICG1t85IH8Ke8PwHIltYIHyzrriNKJmxJpsIJmUdxALzdbpqUkPPxv3RQbh11VSit9hPzPlc1S-cLHSlgWQahCnyNsBh7-C76nmKZTKPPdMzQ4n1DY17MVkiQ9EI3-hSar9vAz83BRWFBP6nHj1fzSvRxteBE2f7GRwJQqWA-81JHV3Se8km4LHSmnLWwjd4IKk4njUn9ugVotwjlK7Lx7F-JMVayPOfOWP34w2Vy-EJMQAKM-zFfg",
+        "sig": "aQKor3B26hduzCnQnBoAkrH_DmxxbXM4AXwHLintDx7QLWrr1scBhSBuGn8SFkJVlvWmzvucJsPIf4lnubD3Bw"
+      },
+      "valid": false,
+      "error": "E2E_BAD_SIGNATURE"
+    }
+  ],
+  "pairing": {
+    "wallet_id": "wal_test0001",
+    "agent_id": "ag_test0001",
+    "code": "R2vSrjiCBkif2TIcI2hrJg",
+    "wallet_fp": "34IU-KXR6-6JTC-LLSF-6OQP-NI6F",
+    "sig": "3zRYxuJPIy6VnJ0Lw1OqUxDfJGN3sUns9D_vmc7u714",
+    "kex": "lL4XL4TAxQCULRUiC-rRzi-tq6mLR9h0CYQm5pjTSRc",
+    "proof": "j9k2QOWH6ndxoGIvekBs1V6mWHim9F5QzuW-l9L358A"
+  }
+}

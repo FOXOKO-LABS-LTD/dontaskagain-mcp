@@ -1,0 +1,60 @@
+{
+  "name": "dontaskagain-mcp",
+  "version": "0.1.4",
+  "description": "Don't Ask Again — agent side of the wallet: stdio MCP server, the agent key stays on this machine, requests are signed and end-to-end encrypted",
+  "license": "Apache-2.0",
+  "author": "FOXOKO LABS LTD <dev@dontaskagain.xyz>",
+  "homepage": "https://dontaskagain.xyz",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foxokolabs/dontaskagain-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/foxokolabs/dontaskagain-mcp/issues"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "mcp-server",
+    "ai-agent",
+    "wallet",
+    "crypto-wallet",
+    "tron",
+    "usdt",
+    "usdc",
+    "evm",
+    "end-to-end-encryption",
+    "human-in-the-loop",
+    "claude",
+    "codex"
+  ],
+  "mcpName": "io.github.foxokolabs/dontaskagain-mcp",
+  "type": "module",
+  "bin": {
+    "dontaskagain-mcp": "dist/cli.js"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/cli.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run build && node --test test/*.test.mjs",
+    "prepack": "npm run build",
+    "prepublishOnly": "npm run build && node scripts/check-publish.mjs"
+  },
+  "devDependencies": {
+    "@noble/curves": "^2.4.0",
+    "@noble/hashes": "^2.4.0",
+    "@types/node": "^22.0.0",
+    "typescript": "5.9",
+    "ws": "^8.18.0"
+  }
+}

@@ -1,0 +1,54 @@
+name: Publish
+
+# Publishes to npm when a tag v* is pushed (e.g. v0.1.4), through npm Trusted Publishing (OIDC):
+# no NPM_TOKEN secret. Before the first run, on npmjs.com → the package → Settings → Trusted publishing, add
+# GitHub Actions: organization/user "foxokolabs", repository "dontaskagain-mcp", workflow file "publish.yml".
+# Requirements (npm docs): GitHub-hosted runner, npm CLI >= 11.5.1, Node >= 22.14, `id-token: write`, and
+# package.json repository.url matching this repository exactly.
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+  id-token: write   # OIDC token for npm Trusted Publishing (and provenance)
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: lts/*
+          registry-url: https://registry.npmjs.org
+          # no cache in release builds
+      - name: npm with Trusted Publishing support (>= 11.5.1)
+        run: npm install -g npm@^11.5.1 && npm --version
+      - name: The tag matches package.json
+        run: |
+          v="$(node -p "require('./package.json').version")"
+          [ "v$v" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME != package.json version $v"; exit 1; }
+          s="$(node -p "require('./server.json').version")"
+          [ "$s" = "$v" ] || { echo "server.json version $s != package.json version $v"; exit 1; }
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm publish --provenance --access public
+
+      # MCP Registry (registry.modelcontextprotocol.io). Disabled for now: enable it after the npm package is
+      # live, because the registry checks that the npm package exists and that its package.json "mcpName" equals
+      # server.json "name" (io.github.foxokolabs/dontaskagain-mcp). Login through GitHub OIDC needs the same
+      # `id-token: write` permission; the io.github.foxokolabs/* namespace is proven by running in this org.
+      # Pin the publisher (MCP_PUBLISHER_VERSION, e.g. v1.8.1) and verify its Sigstore bundle with cosign as in the
+      # registry's GitHub Actions guide (docs/modelcontextprotocol-io/github-actions.mdx).
+      # - name: Download mcp-publisher
+      #   env:
+      #     MCP_PUBLISHER_VERSION: v1.8.1
+      #   run: |
+      #     curl -fsSL "https://github.com/modelcontextprotocol/registry/releases/download/${MCP_PUBLISHER_VERSION}/mcp-publisher_linux_amd64.tar.gz" | tar xz mcp-publisher
+      # - name: Publish to the MCP Registry
+      #   run: |
+      #     ./mcp-publisher login github-oidc
+      #     ./mcp-publisher publish

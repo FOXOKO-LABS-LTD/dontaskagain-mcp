@@ -1,0 +1,11 @@
+dontaskagain-mcp — agent side of the Don't Ask Again wallet
+Copyright 2026 FOXOKO LABS LTD
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+"Don't Ask Again" is a trademark of FOXOKO LABS LTD. The Apache License does
+not grant permission to use it except as required for reasonable and customary
+use in describing the origin of the work.
+
+The package has no runtime dependencies. Development dependencies are listed in
+package.json and keep their own licenses.

@@ -1,0 +1,70 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.foxokolabs/dontaskagain-mcp",
+  "title": "Don't Ask Again",
+  "description": "Agent asks, human signs: wallet requests for AI agents, end-to-end encrypted, keys stay in browser",
+  "websiteUrl": "https://dontaskagain.xyz",
+  "repository": {
+    "url": "https://github.com/foxokolabs/dontaskagain-mcp",
+    "source": "github"
+  },
+  "version": "0.1.4",
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "dontaskagain-mcp",
+      "version": "0.1.4",
+      "runtimeHint": "npx",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "DAA_CONFIG",
+          "description": "Path to the connection file from the wallet (KEY=VALUE lines with the DAA_* variables below, mode 600). Recommended: keeps the token and pairing code out of the command line.",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "filepath"
+        },
+        {
+          "name": "DAA_URL",
+          "description": "Signer address (https; plain http only for localhost or a private network). Required unless set in DAA_CONFIG.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DAA_TOKEN",
+          "description": "Agent token aw_ag_<id>_<secret> from the wallet's connect wizard. Required unless set in DAA_CONFIG.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "DAA_WALLET",
+          "description": "Wallet public key <sig>.<kex> (base64url), pinned at the first start.",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DAA_WALLET_ID",
+          "description": "Wallet id wal_..., pinned at once (recommended).",
+          "isRequired": false,
+          "isSecret": false
+        },
+        {
+          "name": "DAA_PAIR",
+          "description": "One-time pairing code (valid 24 h); can be removed after pairing.",
+          "isRequired": false,
+          "isSecret": true
+        },
+        {
+          "name": "DAA_HOME",
+          "description": "Folder for the agent key and state (default ~/.dontaskagain).",
+          "isRequired": false,
+          "isSecret": false,
+          "format": "filepath"
+        }
+      ]
+    }
+  ]
+}
