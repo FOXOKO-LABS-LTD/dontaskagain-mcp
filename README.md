@@ -21,15 +21,21 @@ modes (0600/0700) are not checked — the key is protected only by the user prof
 
 ## Install
 
-Until the package is published on npm, run it from the website archive (sha256 next to it:
+From npm ([dontaskagain-mcp](https://www.npmjs.com/package/dontaskagain-mcp)):
+
+```bash
+npx -y dontaskagain-mcp@0.1.4
+```
+
+Always pin the exact version — `npx -y dontaskagain-mcp` without a version (or `@latest`) would silently run whatever
+was published last; the extension wizard pins the version it was tested with.
+
+Fallback without access to the npm registry: the same version from the website archive (sha256 next to it:
 `https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz.sha256`, all files: https://dontaskagain.xyz/dl/latest.json):
 
 ```bash
 npx -y -p https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz dontaskagain-mcp
 ```
-
-After the npm release: `npx -y dontaskagain-mcp@0.1.4`. Always pin the exact version — `npx -y` without a version
-would silently run whatever was published last.
 
 ## Connect an agent
 
@@ -50,7 +56,7 @@ DAA_PAIR=<pairing code>
 ```bash
 mkdir -p -m 700 ~/.dontaskagain
 mv ~/Downloads/dontaskagain-<name>.env ~/.dontaskagain/ && chmod 600 ~/.dontaskagain/dontaskagain-<name>.env
-claude mcp add -s user dontaskagain-<name> -e DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y -p https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz dontaskagain-mcp
+claude mcp add -s user dontaskagain-<name> -e DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y dontaskagain-mcp@0.1.4
 ```
 
 **OpenAI Codex** (`~/.codex/config.toml`, shared by the CLI and the IDE extension) — the same two file lines, then:
@@ -58,13 +64,13 @@ claude mcp add -s user dontaskagain-<name> -e DAA_CONFIG=~/.dontaskagain/dontask
 ```toml
 [mcp_servers.dontaskagain-<name>]
 command = "npx"
-args = ["-y", "-p", "https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz", "dontaskagain-mcp"]
+args = ["-y", "dontaskagain-mcp@0.1.4"]
 env = { DAA_CONFIG = "~/.dontaskagain/dontaskagain-<name>.env" }
 startup_timeout_sec = 60
 tool_timeout_sec = 330
 ```
 
-or `codex mcp add dontaskagain-<name> --env DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y -p https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz dontaskagain-mcp`
+or `codex mcp add dontaskagain-<name> --env DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y dontaskagain-mcp@0.1.4`
 and add the two timeout lines yourself (the default 60 s tool timeout cuts `wallet_request_status`, which waits up
 to 300 s). Check with `codex mcp list`.
 
@@ -75,7 +81,7 @@ to 300 s). Check with `codex mcp list`.
   "mcpServers": {
     "dontaskagain-<name>": {
       "command": "npx",
-      "args": ["-y", "-p", "https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz", "dontaskagain-mcp"],
+      "args": ["-y", "dontaskagain-mcp@0.1.4"],
       "env": { "DAA_CONFIG": "~/.dontaskagain/dontaskagain-<name>.env" }
     }
   }
@@ -95,7 +101,7 @@ On the first start the package:
 The wizard shows the **agent key fingerprint** (`XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`). Compare it with:
 
 ```bash
-DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env npx -y -p https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz dontaskagain-mcp whoami
+DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env npx -y dontaskagain-mcp@0.1.4 whoami
 ```
 
 (or `wallet_status` → `e2e.agent_fp`). If it does not match, press "Does not match" in the wallet and reconnect the

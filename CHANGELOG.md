@@ -1,5 +1,8 @@
 # Changelog
 
+## Unreleased
+- README: install from npm (`npx -y dontaskagain-mcp@0.1.4`); the website archive is the fallback.
+
 ## 0.1.4 — 2026-11-25
 - First version published from the public repository. Source comments no longer point to documents that are not
   public; `prepublishOnly` checks the package before it is published.
