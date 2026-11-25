@@ -2,7 +2,7 @@ name: Publish
 
 # Publishes to npm when a tag v* is pushed (e.g. v0.1.4), through npm Trusted Publishing (OIDC):
 # no NPM_TOKEN secret. Before the first run, on npmjs.com → the package → Settings → Trusted publishing, add
-# GitHub Actions: organization/user "foxokolabs", repository "dontaskagain-mcp", workflow file "publish.yml".
+# GitHub Actions: organization "FOXOKO-LABS-LTD", repository "dontaskagain-mcp", workflow file "publish.yml".
 # Requirements (npm docs): GitHub-hosted runner, npm CLI >= 11.5.1, Node >= 22.14, `id-token: write`, and
 # package.json repository.url matching this repository exactly.
 
@@ -39,8 +39,8 @@ jobs:
 
       # MCP Registry (registry.modelcontextprotocol.io). Disabled for now: enable it after the npm package is
       # live, because the registry checks that the npm package exists and that its package.json "mcpName" equals
-      # server.json "name" (io.github.foxokolabs/dontaskagain-mcp). Login through GitHub OIDC needs the same
-      # `id-token: write` permission; the io.github.foxokolabs/* namespace is proven by running in this org.
+      # server.json "name" (io.github.FOXOKO-LABS-LTD/dontaskagain-mcp). Login through GitHub OIDC needs the same
+      # `id-token: write` permission; the io.github.FOXOKO-LABS-LTD/* namespace is proven by running in this org.
       # Pin the publisher (MCP_PUBLISHER_VERSION, e.g. v1.8.1) and verify its Sigstore bundle with cosign as in the
       # registry's GitHub Actions guide (docs/modelcontextprotocol-io/github-actions.mdx).
       # - name: Download mcp-publisher

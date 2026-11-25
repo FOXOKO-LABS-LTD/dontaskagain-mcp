@@ -7,7 +7,7 @@ This code holds or handles wallet keys and signed transactions, so we take repor
 Please **do not open a public issue** for a security problem.
 
 - Use GitHub private vulnerability reporting: the **Security** tab of this repository → **Report a vulnerability**
-  (https://github.com/foxokolabs/dontaskagain-mcp/security/advisories/new), or
+  (https://github.com/FOXOKO-LABS-LTD/dontaskagain-mcp/security/advisories/new), or
 - email **security@dontaskagain.xyz**.
 
 Include the affected version, the steps to reproduce and the impact you see. We acknowledge reports within a few

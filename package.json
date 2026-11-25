@@ -7,10 +7,10 @@
   "homepage": "https://dontaskagain.xyz",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/foxokolabs/dontaskagain-mcp.git"
+    "url": "git+https://github.com/FOXOKO-LABS-LTD/dontaskagain-mcp.git"
   },
   "bugs": {
-    "url": "https://github.com/foxokolabs/dontaskagain-mcp/issues"
+    "url": "https://github.com/FOXOKO-LABS-LTD/dontaskagain-mcp/issues"
   },
   "keywords": [
     "mcp",
@@ -28,7 +28,7 @@
     "claude",
     "codex"
   ],
-  "mcpName": "io.github.foxokolabs/dontaskagain-mcp",
+  "mcpName": "io.github.FOXOKO-LABS-LTD/dontaskagain-mcp",
   "type": "module",
   "bin": {
     "dontaskagain-mcp": "dist/cli.js"

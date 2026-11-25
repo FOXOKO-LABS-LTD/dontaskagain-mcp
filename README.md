@@ -5,7 +5,7 @@
 The agent side of the [Don't Ask Again](https://dontaskagain.xyz) wallet: a stdio MCP server through which an AI agent
 (Claude Code, OpenAI Codex or any MCP client) asks the human's wallet for simple operations — transfer, swap, USDC
 bridge, gas refuel. The human reviews and signs every transaction in the
-[Chrome extension](https://github.com/foxokolabs/dontaskagain-agent-wallet); the wallet never signs on its own.
+[Chrome extension](https://github.com/FOXOKO-LABS-LTD/dontaskagain-agent-wallet); the wallet never signs on its own.
 
 **End-to-end encryption.** The agent key is created and kept on the agent's machine. Every request is signed with it
 and encrypted to the wallet's key. The Signer server (including the public one operated by FOXOKO LABS LTD) is only a

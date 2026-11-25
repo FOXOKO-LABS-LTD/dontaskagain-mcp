@@ -1,11 +1,11 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.foxokolabs/dontaskagain-mcp",
+  "name": "io.github.FOXOKO-LABS-LTD/dontaskagain-mcp",
   "title": "Don't Ask Again",
   "description": "Agent asks, human signs: wallet requests for AI agents, end-to-end encrypted, keys stay in browser",
   "websiteUrl": "https://dontaskagain.xyz",
   "repository": {
-    "url": "https://github.com/foxokolabs/dontaskagain-mcp",
+    "url": "https://github.com/FOXOKO-LABS-LTD/dontaskagain-mcp",
     "source": "github"
   },
   "version": "0.1.4",
