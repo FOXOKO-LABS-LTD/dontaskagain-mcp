@@ -55,12 +55,12 @@ export function fakeMailbox({ walletId = 'wal_test0001', walletKeys, agents }) {
       return views[agent] ? send(200, { envelope: views[agent] }) : send(404, { error: { code: 'E2E_VIEW_NOT_SYNCED', message: 'no view' } });
     }
     if (req.method === 'GET' && u.pathname === '/v1/wallet') {
-      return send(200, { schema_version: '1', e2e: true, accounts: [{ id: 'acc_main0001', addresses: { tron: 'TSZuTestAddr' }, balances: {} }], extension: { online: true, unlocked: true } });
+      return send(200, api.walletBody ?? { schema_version: '1', e2e: true, accounts: [{ id: 'acc_main0001', addresses: { tron: 'TSZuTestAddr' }, balances: {} }], extension: { online: true, unlocked: true } });
     }
     send(404, { error: { code: 'NOT_FOUND', message: u.pathname } });
   });
   const api = {
-    ev, toWallet, toAgent, views, log,
+    ev, toWallet, toAgent, views, log, walletBody: null,
     pushToAgent(agentId, env) { const it = { seq: ++seq, envelope: env }; (toAgent[agentId] ??= []).push(it); ev.emit('agent:' + agentId, it); return it; },
     listen: () => new Promise((r) => srv.listen(0, '127.0.0.1', () => r(`http://127.0.0.1:${srv.address().port}`))),
     close: () => new Promise((r) => { srv.closeAllConnections?.(); srv.close(() => r()); }),
@@ -76,7 +76,7 @@ export function fakeExtension({ box, walletId = 'wal_test0001', walletPriv, code
   const seen = [];
   const rejected = [];
   const sealTo = (agentId, payload) => c.seal({ wallet_id: walletId, from: 'wallet', to: agentId, payload, senderSigPriv: W.sig_priv, recipientKexPub: bound[agentId].kex });
-  const view = (agentId, extra = {}) => ({ t: 'view', version: 1, wallet_id: walletId, agent: { id: agentId, name: 'claude-bot', accounts: [{ id: 'acc_main0001', name: 'main', addresses: { tron: 'TSZuTestAddr' } }], default_account: 'acc_main0001', allowed_types: ['transfer', 'swap'], rules: {} }, address_book: [{ id: 'ab_1', label: 'Склад', network: 'tron', address: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A' }], networks_trusted: ['tron'], global: {}, ...extra });
+  const view = (agentId, extra = {}) => ({ t: 'view', version: 1, wallet_id: walletId, agent: { id: agentId, name: 'claude-bot', accounts: [{ id: 'acc_main0001', name: 'main', addresses: { tron: 'TSZuTestAddr' } }], default_account: 'acc_main0001', allowed_types: ['transfer', 'swap'], rules: {} }, address_book: [{ id: 'ab_1', label: 'Склад', network: 'tron', address: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb' }], networks_trusted: ['tron'], global: {}, ...extra });
   box.ev.on('wallet', ({ envelope: env }) => {
     try {
       if (!bound[env.from]) {

@@ -67,7 +67,7 @@ function run(args, env, input, ms = 20000) {
     if (input !== undefined) p.stdin.end(input); else p.stdin.end();
   });
 }
-const transfer = (extra = {}) => ({ type: 'transfer', network: 'tron', asset: 'USDT', to: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', amount: '1', reason: 'pay', wait_seconds: 0, ...extra });
+const transfer = (extra = {}) => ({ type: 'transfer', network: 'tron', asset: 'USDT', to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', amount: '1', reason: 'pay', wait_seconds: 0, ...extra });
 
 test('wallet_status: addresses only from the signed view; Signer data whitelisted, separated and marked', async () => {
   const w = await world();
@@ -479,8 +479,8 @@ test('preview: TRON addresses compared case-sensitively, EVM not; honest decisio
   const w = await world();
   try {
     const a = await paired(w, w.url, tmpHome());
-    const [lower] = await callTool(a, 'wallet_preview', transfer({ to: 'tkhbk1wfcpphhp3odcm9hnrssb9mt5su4a' }));
-    assert.equal(lower.checks.to_in_address_book, false);
+    const [lower, lowerErr] = await callTool(a, 'wallet_preview', transfer({ to: 'tdp9tmfuqhs2sb7kzhp3fzexghlaznuqfb' }));
+    assert.equal(lowerErr, true); assert.equal(lower.error.code, 'INVALID_ADDRESS'); // 0.1.5: base58check is case-sensitive
     const [exact] = await callTool(a, 'wallet_preview', transfer());
     assert.deepEqual(exact.checks.to_in_address_book, { label: 'Склад' });
     assert.equal(exact.decision, 'human'); // 0.1.2: the wallet never signs on its own
@@ -489,21 +489,22 @@ test('preview: TRON addresses compared case-sensitively, EVM not; honest decisio
     const view = w.ext.view(AG, { version: 2 });
     view.agent.rules = { acc_main0001: { transfer: { enabled: true } } };
     delete view.agent.allowed_types;
-    view.address_book.push({ id: 'ab_2', label: 'EVM', network: 'evm:*', address: '0x3214AbCdEf0123456789aBcDeF0123456789b67C' });
+    view.agent.accounts[0].addresses.evm = '0x00000000000000000000000000000000000000e1';
+    view.address_book.push({ id: 'ab_2', label: 'EVM', network: 'evm:*', address: '0x3214aBCdef0123456789aBCDEf0123456789b67c' });
     w.box.views[AG] = w.ext.sealTo(AG, view);
     const [auto] = await callTool(a, 'wallet_preview', transfer());
     assert.equal(auto.decision, 'human');
     assert.equal(auto.will_wait_for, 'human');
     assert.equal(auto.checks.type_allowed, null);
     assert.match(auto.note, /never signs on its own/);
-    const [evm] = await callTool(a, 'wallet_preview', transfer({ network: 'evm:8453', asset: 'USDC', to: '0x3214abcdef0123456789abcdef0123456789B67c' }));
+    const [evm] = await callTool(a, 'wallet_preview', transfer({ network: 'evm:8453', asset: 'USDC', to: '0x3214ABCDEF0123456789ABCDEF0123456789B67C' }));
     assert.deepEqual(evm.checks.to_in_address_book, { label: 'EVM' });
   } finally { await w.box.close(); }
 });
 
 test('engines: the minimum Node is the one the tests need (>= 20.19)', () => {
   assert.equal(PKG.engines.node, '>=20.19');
-  assert.equal(PKG.version, '0.1.4');
+  assert.equal(PKG.version, '0.1.5');
 });
 
 test('misc: "__proto__" ids are ordinary keys', async () => {
@@ -545,4 +546,76 @@ test('no auto-sign: tool texts say the wallet never signs on its own; preview is
     assert.equal(pv.will_wait_for, 'human');
     assert.ok(!pv.reasons.includes('auto_disabled'));
   } finally { await w.box.close(); }
+});
+
+// 0.1.5: local checks before any window — the wallet's codes, nothing sent; the balance is only a warning.
+test('local checks: address, decimals, network, asset; preview balance warning; nothing reaches the wallet', async () => {
+  const w = await world();
+  try {
+    const a = await paired(w, w.url, tmpHome());
+    const n0 = w.box.toWallet.length;
+    const code = async (tool, extra) => { const [o, e] = await callTool(a, tool, transfer(extra)); return [e ? o.error.code : 'ok', o]; };
+    for (const tool of ['wallet_preview', 'wallet_request']) {
+      assert.equal((await code(tool, { to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFc' }))[0], 'INVALID_ADDRESS', tool);
+      assert.equal((await code(tool, { to: '0x3214abcdef0123456789abcdef0123456789b67c' }))[0], 'INVALID_ADDRESS', tool);
+      assert.equal((await code(tool, { amount: '1.1234567' }))[0], 'BAD_AMOUNT', tool);
+      assert.equal((await code(tool, { amount: '0' }))[0], 'BAD_AMOUNT', tool);
+      assert.equal((await code(tool, { network: 'ton', to: 'UQx' }))[0], 'UNSUPPORTED_NETWORK', tool);
+      assert.equal((await code(tool, { network: 'evm:56', asset: 'USDT', to: '0x3214abcdef0123456789abcdef0123456789b67c' }))[0], 'UNSUPPORTED_NETWORK', tool);
+      assert.equal((await code(tool, { network: 'evm:8453', asset: 'USDC', to: '0x3214abcdef0123456789abcdef0123456789b67c' }))[0], 'UNSUPPORTED_NETWORK', tool); // no EVM address
+      assert.equal((await code(tool, { asset: 'USDC' }))[0], 'UNSUPPORTED_ASSET', tool);
+      assert.equal((await code(tool, { to: 'TSZuTestAddr' }))[0], 'INVALID_ADDRESS', tool);
+    }
+    const [e, o] = await code('wallet_preview', { amount: '1.1234567' });
+    assert.equal(e, 'BAD_AMOUNT'); assert.match(o.hint.do, /decimals/); assert.match(o.summary, /Tell the human/);
+    const [t] = await callTool(a, 'wallet_preview', { type: 'swap', network: 'evm:1', asset_in: 'TRX', asset_out: 'USDT', amount_in: '1' });
+    assert.equal(t.error.code, 'UNSUPPORTED_NETWORK');
+    const view = w.ext.view(AG, { version: 2 });
+    view.agent.allowed_types = ['transfer', 'swap', 'bridge', 'refuel'];
+    view.agent.accounts[0].addresses.evm = '0x00000000000000000000000000000000000000e1';
+    w.box.views[AG] = w.ext.sealTo(AG, view);
+    const [b] = await callTool(a, 'wallet_preview', { type: 'bridge', from_network: 'evm:1', to_network: 'evm:56', amount: '1' });
+    assert.equal(b.error.code, 'UNSUPPORTED_NETWORK');
+    const [r] = await callTool(a, 'wallet_preview', { type: 'refuel', to_network: 'evm:137', amount_eth: '0.01' });
+    assert.equal(r.error.code, 'UNSUPPORTED_NETWORK');
+    const [r2] = await callTool(a, 'wallet_preview', { type: 'refuel', to_network: 'evm:8453', amount_eth: '0.0000000000000000001' });
+    assert.equal(r2.error.code, 'BAD_AMOUNT');
+    assert.equal(w.box.toWallet.length, n0, 'nothing sent to the wallet');
+
+    // balance: the Signer reports less than the amount → a warning, not a refusal
+    w.box.walletBody = { schema_version: '1', e2e: true, accounts: [{ id: 'acc_main0001', addresses: { tron: 'TSZuTestAddr' }, balances: { tron: { TRX: '12.5', USDT: '3.000000' } } }], extension: { online: true, unlocked: true } };
+    const [ok, okErr] = await callTool(a, 'wallet_preview', transfer({ amount: '2.5' }));
+    assert.equal(okErr, false); assert.equal(ok.warnings, undefined); assert.equal(ok.checks.balance_checked_unverified, true); assert.equal(ok.checks.format, 'ok');
+    const [low, lowErr] = await callTool(a, 'wallet_preview', transfer({ amount: '3.000001' }));
+    assert.equal(lowErr, false); assert.equal(low.decision, 'human');
+    assert.equal(low.warnings[0].code, 'INSUFFICIENT_BALANCE'); assert.equal(low.warnings[0].have_unverified, '3.000000');
+    assert.match(low.warnings[0].hint.do, /warning/); assert.match(low.summary, /WARNING INSUFFICIENT_BALANCE/);
+    const [lc] = await callTool(a, 'wallet_preview', transfer({ asset: 'usdt', amount: '1' }));
+    assert.equal(lc.checks.format, 'ok', 'asset symbols are case-insensitive');
+    // a Signer that reports other addresses: its balances are dropped, no warning from them
+    w.box.walletBody = { accounts: [{ id: 'acc_main0001', addresses: { tron: 'TATTACKER' }, balances: { tron: { USDT: '0' } } }] };
+    const [mm] = await callTool(a, 'wallet_preview', transfer({ amount: '5' }));
+    assert.equal(mm.warnings, undefined); assert.equal(mm.checks.balance_checked_unverified, false);
+    // the request itself is not refused for the balance
+    w.box.walletBody = { accounts: [{ id: 'acc_main0001', addresses: { tron: 'TSZuTestAddr' }, balances: { tron: { USDT: '0' } } }] };
+    const [rq, rqErr] = await callTool(a, 'wallet_request', transfer({ amount: '5' }));
+    assert.equal(rqErr, false, rq.summary); assert.equal(rq.status, 'pending');
+  } finally { await w.box.close(); }
+});
+
+test('validate: EIP-55, TRON base58check, keccak-256, units', async () => {
+  const v = await import('../dist/validate.js');
+  assert.equal(v.keccak256(Buffer.alloc(0)).toString('hex'), 'c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470');
+  for (const x of ['0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed', '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359', '0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB']) {
+    assert.equal(v.isEvmAddress(x), true, x); assert.equal(v.isEvmAddress(x.toLowerCase()), true); assert.equal(v.toChecksumAddress(x.toLowerCase()), x);
+    assert.equal(v.isEvmAddress(x.replace('a', 'A')), false, 'bad checksum');
+  }
+  assert.equal(v.isEvmAddress('0x123'), false);
+  assert.equal(v.isTronAddress('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t'), true);
+  assert.equal(v.isTronAddress('TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6T'), false);
+  assert.equal(v.toUnits('1.1234567', 6), null); assert.equal(v.toUnits('25.00', 6), 25000000n); assert.equal(v.toUnits('1', 18), 10n ** 18n);
+  for (const c of ['INVALID_ADDRESS', 'BAD_AMOUNT', 'UNSUPPORTED_NETWORK', 'INSUFFICIENT_BALANCE', 'NOT_CANCELLABLE', 'BAD_REQUEST', 'ACCOUNT_NOT_BOUND']) {
+    const { hintFor } = await import('../dist/hints.js');
+    assert.ok(hintFor(c)?.do && hintFor(c)?.tell_human, c);
+  }
 });

@@ -1,7 +1,16 @@
 # Changelog
 
-## Unreleased
-- README: install from npm (`npx -y dontaskagain-mcp@0.1.4`); the website archive is the fallback.
+## 0.1.5 — 2026-11-25
+- Local checks in `wallet_preview` and before `wallet_request` (nothing is sent when they fail), with the wallet's
+  error codes: `UNSUPPORTED_NETWORK` (a network or an operation the wallet does not serve, an account without an
+  address there), `UNSUPPORTED_ASSET`, `BAD_AMOUNT` (more decimals than the asset has: USDT, USDC, TRX 6; ETH, POL 18;
+  zero), `INVALID_ADDRESS` (TRON base58check; EVM `0x` + 40 hex with the EIP-55 checksum when the case is mixed),
+  `SELF_TRANSFER`. Before 0.1.5 such a request reached the wallet and failed only in the human's window.
+- `wallet_preview` warns, never refuses: `INSUFFICIENT_BALANCE` when the balance reported by the Signer (not signed
+  by the wallet) is lower than the amount, `NETWORK_NOT_TRUSTED` when the network is not in `networks_trusted`.
+- Hints (`hint.do`, `hint.tell_human`) for `INVALID_ADDRESS`, `BAD_AMOUNT`, `UNSUPPORTED_NETWORK`,
+  `UNSUPPORTED_ASSET`, `SELF_TRANSFER`, `INSUFFICIENT_BALANCE`, `NOT_CANCELLABLE`, `BAD_REQUEST`.
+- README: install from npm (`npx -y dontaskagain-mcp@0.1.5`); the website archive is the fallback.
 
 ## 0.1.4 — 2026-11-25
 - First version published from the public repository. Source comments no longer point to documents that are not

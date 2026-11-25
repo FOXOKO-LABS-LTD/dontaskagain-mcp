@@ -15,10 +15,11 @@ import {
   type KeyFile, type LocalRequest, type State,
 } from './store.js';
 import { canonical, dict, E2EError, isFinal, reached, statusRank, UNKNOWN, untrusted, uuid } from './util.js';
+import { validateIntent } from './validate.js';
 
 export { E2EError } from './util.js';
 
-export const VERSION = '0.1.4';
+export const VERSION = '0.1.5';
 /** Types an E2E request can have (x402_pay is not executed end-to-end: the wallet answers E2E_TYPE_UNSUPPORTED). */
 export const TYPES = ['transfer', 'swap', 'bridge', 'refuel'] as const;
 
@@ -463,7 +464,9 @@ export class Agent {
       if (account) body.account = account.id;
       if (Array.isArray(ag.allowed_types) && !ag.allowed_types.includes(type)) throw new E2EError('TYPE_NOT_ALLOWED', `type ${type} is not allowed for this agent (the human sets it in the wallet)`, { allowed_types: ag.allowed_types });
     }
-    return { body, type, account, expiresIn: exp };
+    // 0.1.5: network served, asset listed, amount precision, recipient format — the wallet's codes, before any window
+    const spend = validateIntent(type, body, account);
+    return { body, type, account, expiresIn: exp, spend };
   }
 
   async createRequest(args: Record<string, any>): Promise<{ lr: LocalRequest; replay: boolean }> {

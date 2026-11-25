@@ -52,7 +52,7 @@ test('request → wallet decrypts → human rejects → agent gets the status; s
   try {
     const a = new Agent(s.cfg).init();
     await a.pairIfNeeded(); await a.waitUntil(() => a.paired, 5);
-    const [res, isErr] = await callTool(a, 'wallet_request', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', amount: '25.00', reason: 'Оплата счёта #118', wait_seconds: 10 });
+    const [res, isErr] = await callTool(a, 'wallet_request', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', amount: '25.00', reason: 'Оплата счёта #118', wait_seconds: 10 });
     assert.equal(isErr, false, JSON.stringify(res));
     assert.equal(res.status, 'rejected');
     assert.equal(res.decision.by, 'human');
@@ -61,7 +61,7 @@ test('request → wallet decrypts → human rejects → agent gets the status; s
     assert.equal(got.payload.amount, '25.00');
     assert.equal(got.payload.account, 'acc_main0001'); // default account from the view
     const wire = JSON.stringify(s.box.toWallet) + JSON.stringify(s.box.toAgent) + s.box.log.join('\n');
-    for (const secret of ['25.00', 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', 'Оплата', '#118', 'USDT', 'transfer']) assert.ok(!wire.includes(secret), `server sees ${secret}`);
+    for (const secret of ['25.00', 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', 'Оплата', '#118', 'USDT', 'transfer']) assert.ok(!wire.includes(secret), `server sees ${secret}`);
     // status by client_request_id from local state
     const [st] = await callTool(a, 'wallet_request_status', { client_request_id: res.client_request_id });
     assert.equal(st.status, 'rejected');
@@ -80,7 +80,7 @@ test('a status not signed by the pinned wallet key is ignored', async () => {
   try {
     const a = new Agent(s.cfg).init();
     await a.pairIfNeeded(); await a.waitUntil(() => a.paired, 5);
-    const [res] = await callTool(a, 'wallet_request', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', amount: '1', reason: 'x', wait_seconds: 1 });
+    const [res] = await callTool(a, 'wallet_request', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', amount: '1', reason: 'x', wait_seconds: 1 });
     assert.equal(res.status, 'pending');
     // the server forges "confirmed" with its own key
     const forger = c.generateKeys();
@@ -101,7 +101,7 @@ test('local expiry, idempotent replay and conflict, cancel', async () => {
   try {
     const a = new Agent(s.cfg).init();
     await a.pairIfNeeded(); await a.waitUntil(() => a.paired, 5);
-    const args = { type: 'transfer', network: 'tron', asset: 'TRX', to: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', amount: '5', reason: 'r', client_request_id: 'inv-1', wait_seconds: 0 };
+    const args = { type: 'transfer', network: 'tron', asset: 'TRX', to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', amount: '5', reason: 'r', client_request_id: 'inv-1', wait_seconds: 0 };
     const [r1] = await callTool(a, 'wallet_request', args);
     const [r2] = await callTool(a, 'wallet_request', args);
     assert.equal(r2.request_id, r1.request_id);
@@ -135,7 +135,7 @@ test('view checks: account not bound, type not allowed; preview is local', async
     assert.equal(x1, true); assert.equal(e1.error.code, 'ACCOUNT_NOT_BOUND');
     const [e2] = await callTool(a, 'wallet_request', { type: 'bridge', from_network: 'evm:1', to_network: 'evm:8453', asset: 'USDC', amount: '1', reason: 'r' });
     assert.equal(e2.error.code, 'TYPE_NOT_ALLOWED');
-    const [pv] = await callTool(a, 'wallet_preview', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', amount: '1' });
+    const [pv] = await callTool(a, 'wallet_preview', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', amount: '1' });
     assert.equal(pv.decision, 'human'); assert.deepEqual(pv.checks.to_in_address_book, { label: 'Склад' });
     assert.equal(s.box.toWallet.length, n0); // nothing sent
   } finally { await s.close(); }
@@ -176,7 +176,7 @@ test('stdio MCP: initialize, tools/list, tools/call over the CLI', async () => {
     assert.deepEqual(list.result.tools.map((t) => t.name), ['wallet_status', 'wallet_preview', 'wallet_request', 'wallet_request_status', 'wallet_cancel', 'wallet_history']);
     // wait for the pairing done by the server process at start
     for (let i = 0; i < 50 && !s.ext.bound[AG]; i++) await new Promise((r) => setTimeout(r, 50));
-    const r = await call(3, 'tools/call', { name: 'wallet_request', arguments: { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', amount: '2', reason: 'cli', wait_seconds: 10 } });
+    const r = await call(3, 'tools/call', { name: 'wallet_request', arguments: { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', amount: '2', reason: 'cli', wait_seconds: 10 } });
     assert.equal(r.result.isError, false, r.result.content[0].text);
     assert.equal(r.result.structuredContent.status, 'rejected');
     p.stdin.end();

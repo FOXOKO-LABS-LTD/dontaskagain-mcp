@@ -1,4 +1,4 @@
-// Hints for the model: what an error code means for the agent and what to tell the human (0.1.3).
+// Hints for the model: what an error code means for the agent and what to tell the human (0.1.3; 0.1.5: local checks).
 // Our own text only — never the Signer's words. The protocol has no hint field: the
 // hint goes into this package's tool answer next to `summary` (`hint.do`, `hint.tell_human`) and into the summary.
 
@@ -56,6 +56,38 @@ const H: Record<string, Hint> = {
   ACCOUNT_NOT_BOUND: {
     do: 'This account is not bound to you. You cannot bind it yourself.',
     tell_human: 'I am not connected to this account. If you want me to use it, add it to my agent settings in the extension.',
+  },
+  INVALID_ADDRESS: {
+    do: 'The recipient address is not valid for this network (TRON: base58check T…, 34 characters, case-sensitive; EVM: 0x + 40 hex, the EIP-55 checksum must match if the case is mixed). Nothing was sent. Never guess or "fix" an address yourself: ask the human for the exact address, then send the request again.',
+    tell_human: 'The recipient address does not look valid for this network, so I did not send the request. Please copy the exact address again (and tell me which network it is on).',
+  },
+  BAD_AMOUNT: {
+    do: 'The amount is not valid for this asset: a positive decimal string with at most the asset\'s decimals (USDT, USDC, TRX: 6; ETH, POL: 18). Nothing was sent. Do not round on your own if the amount came from the human: ask them.',
+    tell_human: 'The amount has more decimal places than this token allows (or is zero), so I did not send the request. Please confirm the exact amount.',
+  },
+  UNSUPPORTED_NETWORK: {
+    do: 'The wallet does not serve this network for this operation (served for transfers: tron, evm:1, evm:42161, evm:10, evm:137, evm:8453; swap: tron; bridge: USDC between the five EVM networks; refuel: evm:1 → evm:8453 / evm:10 / evm:42161), or the account has no address there. Nothing was sent. Do not try other networks on your own: ask the human.',
+    tell_human: 'Your Don\'t Ask Again wallet does not support this network for this operation, so I did not send the request. Tell me if another network works for you.',
+  },
+  UNSUPPORTED_ASSET: {
+    do: 'This asset is not in the wallet\'s token list for that network (TRON: TRX, USDT; EVM: the native coin, USDC, USDT; Base: ETH, USDC). Nothing was sent. Ask the human.',
+    tell_human: 'The wallet cannot send this token on that network, so I did not send the request. Tell me if another token or network works for you.',
+  },
+  SELF_TRANSFER: {
+    do: 'The recipient is the account\'s own address. Nothing was sent. Ask the human for the right recipient.',
+    tell_human: 'The recipient is this same account, so I did not send the request. Please give me the address it should go to.',
+  },
+  INSUFFICIENT_BALANCE: {
+    do: 'The balance looks lower than the amount. In wallet_preview this is a warning from data the Signer reports (not signed by the wallet): you may still send the request if the human wants it; the wallet checks the real balance when the human signs. Do not top up or move funds yourself.',
+    tell_human: 'The balance on this account looks lower than the amount. Please top it up or tell me a smaller amount; if you think the balance is enough, tell me and I will send the request anyway.',
+  },
+  NOT_CANCELLABLE: {
+    do: 'The request is no longer pending (signed, sent or final), so it cannot be withdrawn. Check it with wallet_request_status; do not create a reverse operation on your own.',
+    tell_human: 'I could not cancel the request: it was already signed or finished. Check it in the extension; if it must be undone, tell me what to do.',
+  },
+  BAD_REQUEST: {
+    do: 'The request is malformed (error.detail.field names the field). Fix that field from the tool description and send it again; if the value came from the human, ask them instead of guessing.',
+    tell_human: 'My request to the wallet was not well-formed; I am fixing it. If a detail is missing (recipient, amount, network), I will ask you.',
   },
   UNAUTHORIZED: {
     do: 'The Signer does not accept your token (revoked or reconnected). Stop calling the wallet.',

@@ -24,17 +24,17 @@ modes (0600/0700) are not checked — the key is protected only by the user prof
 From npm ([dontaskagain-mcp](https://www.npmjs.com/package/dontaskagain-mcp)):
 
 ```bash
-npx -y dontaskagain-mcp@0.1.4
+npx -y dontaskagain-mcp@0.1.5
 ```
 
-Always pin the exact version — `npx -y dontaskagain-mcp` without a version (or `@latest`) would silently run whatever
+Always pin the exact version — without it (or with `@latest`) npx would silently run whatever
 was published last; the extension wizard pins the version it was tested with.
 
 Fallback without access to the npm registry: the same version from the website archive (sha256 next to it:
-`https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz.sha256`, all files: https://dontaskagain.xyz/dl/latest.json):
+`https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.5.tgz.sha256`, all files: https://dontaskagain.xyz/dl/latest.json):
 
 ```bash
-npx -y -p https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.4.tgz dontaskagain-mcp
+npx -y -p https://dontaskagain.xyz/dl/dontaskagain-mcp-0.1.5.tgz dontaskagain-mcp
 ```
 
 ## Connect an agent
@@ -56,7 +56,7 @@ DAA_PAIR=<pairing code>
 ```bash
 mkdir -p -m 700 ~/.dontaskagain
 mv ~/Downloads/dontaskagain-<name>.env ~/.dontaskagain/ && chmod 600 ~/.dontaskagain/dontaskagain-<name>.env
-claude mcp add -s user dontaskagain-<name> -e DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y dontaskagain-mcp@0.1.4
+claude mcp add -s user dontaskagain-<name> -e DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y dontaskagain-mcp@0.1.5
 ```
 
 **OpenAI Codex** (`~/.codex/config.toml`, shared by the CLI and the IDE extension) — the same two file lines, then:
@@ -64,13 +64,13 @@ claude mcp add -s user dontaskagain-<name> -e DAA_CONFIG=~/.dontaskagain/dontask
 ```toml
 [mcp_servers.dontaskagain-<name>]
 command = "npx"
-args = ["-y", "dontaskagain-mcp@0.1.4"]
+args = ["-y", "dontaskagain-mcp@0.1.5"]
 env = { DAA_CONFIG = "~/.dontaskagain/dontaskagain-<name>.env" }
 startup_timeout_sec = 60
 tool_timeout_sec = 330
 ```
 
-or `codex mcp add dontaskagain-<name> --env DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y dontaskagain-mcp@0.1.4`
+or `codex mcp add dontaskagain-<name> --env DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env -- npx -y dontaskagain-mcp@0.1.5`
 and add the two timeout lines yourself (the default 60 s tool timeout cuts `wallet_request_status`, which waits up
 to 300 s). Check with `codex mcp list`.
 
@@ -81,7 +81,7 @@ to 300 s). Check with `codex mcp list`.
   "mcpServers": {
     "dontaskagain-<name>": {
       "command": "npx",
-      "args": ["-y", "dontaskagain-mcp@0.1.4"],
+      "args": ["-y", "dontaskagain-mcp@0.1.5"],
       "env": { "DAA_CONFIG": "~/.dontaskagain/dontaskagain-<name>.env" }
     }
   }
@@ -101,7 +101,7 @@ On the first start the package:
 The wizard shows the **agent key fingerprint** (`XXXX-XXXX-XXXX-XXXX-XXXX-XXXX`). Compare it with:
 
 ```bash
-DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env npx -y dontaskagain-mcp@0.1.4 whoami
+DAA_CONFIG=~/.dontaskagain/dontaskagain-<name>.env npx -y dontaskagain-mcp@0.1.5 whoami
 ```
 
 (or `wallet_status` → `e2e.agent_fp`). If it does not match, press "Does not match" in the wallet and reconnect the
@@ -149,6 +149,13 @@ Each answer is a JSON object plus a short `summary` line for the model.
   `unverified_from_signer`, filtered by an allow-list.
 - `wallet_preview` — computed **locally** from the signed view: shape, account binding, allowed types, whether the
   recipient is in the address book. `decision` is always `"human"`: every request waits for the human's signature.
+- **Local checks** (`wallet_preview` and before `wallet_request`, nothing is sent when they fail), with the wallet's
+  own error codes: `UNSUPPORTED_NETWORK` (served: `tron`, `evm:1`, `evm:42161`, `evm:10`, `evm:137`, `evm:8453`;
+  swap on `tron`; USDC bridge between the five EVM networks; refuel `evm:1` → Base / Optimism / Arbitrum),
+  `UNSUPPORTED_ASSET`, `BAD_AMOUNT` (USDT, USDC, TRX: 6 decimals; ETH, POL: 18), `INVALID_ADDRESS` (TRON base58check;
+  EVM `0x` + 40 hex, EIP-55 checksum when the case is mixed), `SELF_TRANSFER`. The preview also warns
+  (`warnings[]`, never a refusal) with `INSUFFICIENT_BALANCE` when the balance the Signer reports (unverified) is lower
+  than the amount, and with `NETWORK_NOT_TRUSTED` when the network is not in the wallet's `networks_trusted`.
 - `wallet_request` — the request is encrypted and put into the mailbox; the answer waits for the wallet's status
   (`wait_seconds`, default 20). `pending` is normal: the wallet may be closed; the request waits until it opens or
   until `expires_at`. Never repeat a pending request with a new `client_request_id`.

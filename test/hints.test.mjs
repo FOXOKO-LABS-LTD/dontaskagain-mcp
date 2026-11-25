@@ -62,7 +62,7 @@ test('flow: the wallet rejects with AGENTS_PAUSED → the tool answer carries th
   try {
     const a = new Agent({ url, token: TOKEN, walletBundle: c.bundle(W.sig, W.kex), pairCode: code, home, log: () => {} }).init();
     await a.pairIfNeeded(); await a.waitUntil(() => a.paired, 5);
-    const [res, isErr] = await callTool(a, 'wallet_request', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TKHbK1wFcPpHHp3oDCm9HnrSsB9Mt5SU4A', amount: '1', reason: 'test', wait_seconds: 10 });
+    const [res, isErr] = await callTool(a, 'wallet_request', { type: 'transfer', network: 'tron', asset: 'USDT', to: 'TDp9tmfuQhS2SB7Kzhp3FzexghLAZnUqFb', amount: '1', reason: 'test', wait_seconds: 10 });
     assert.equal(isErr, false);
     assert.equal(res.status, 'rejected');
     assert.equal(res.error.code, 'AGENTS_PAUSED');
@@ -81,7 +81,7 @@ test('cli: not configured → every tool answers E2E_NOT_CONFIGURED with a hint;
     if (input) p.stdin.end(input); else p.stdin.end();
   });
   assert.equal((await run(['--version'])).trim(), VERSION);
-  assert.equal(VERSION, '0.1.4');
+  assert.equal(VERSION, '0.1.5');
   const out = await run([], JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'wallet_status', arguments: {} } }) + '\n', {});
   const r = JSON.parse(out.trim().split('\n')[0]).result.structuredContent;
   assert.equal(r.error.code, 'E2E_NOT_CONFIGURED');

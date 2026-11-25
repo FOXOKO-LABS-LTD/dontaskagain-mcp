@@ -1,6 +1,6 @@
 {
   "name": "dontaskagain-mcp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Don't Ask Again — agent side of the wallet: stdio MCP server, the agent key stays on this machine, requests are signed and end-to-end encrypted",
   "license": "Apache-2.0",
   "author": "FOXOKO LABS LTD <dev@dontaskagain.xyz>",
